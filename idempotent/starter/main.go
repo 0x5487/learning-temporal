@@ -17,7 +17,7 @@ func main() {
 
 	workflowOptions := client.StartWorkflowOptions{
 		ID:        "idempotent_workflowID",
-		TaskQueue: "idempotent",
+		TaskQueue: "idempotent1",
 	}
 
 	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, "myWorkflow", "Temporal")

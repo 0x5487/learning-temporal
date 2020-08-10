@@ -14,7 +14,7 @@ import (
 func main() {
 	// set up log target
 	log.
-		Str("app_id", "starter").
+		Str("app_id", "worker1").
 		SaveToDefault()
 
 	clog := console.New()
@@ -28,20 +28,20 @@ func main() {
 	}
 	defer c.Close()
 
-	w := worker.New(c, "idempotent", worker.Options{})
+	w := worker.New(c, "idempotent1", worker.Options{})
 
 	w.RegisterWorkflow(myWorkflow)
 	w.RegisterActivity(Activity1)
-	w.RegisterActivity(Activity2)
 
 	err = w.Run(worker.InterruptCh())
 	if err != nil {
-		log.Fatalf("Unable to start worker", err)
+		log.Fatalf("Unable to start worker1", err)
 	}
 }
 
 func myWorkflow(ctx workflow.Context, name string) (string, error) {
 	ao := workflow.ActivityOptions{
+		TaskQueue:              "idempotent1",
 		ScheduleToStartTimeout: time.Minute,
 		StartToCloseTimeout:    time.Minute,
 	}
@@ -60,6 +60,13 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 	log.Info("waiting......")
 	time.Sleep(3 * time.Second)
 
+	ao = workflow.ActivityOptions{
+		TaskQueue:              "idempotent2",
+		ScheduleToStartTimeout: time.Minute,
+		StartToCloseTimeout:    time.Minute,
+	}
+	ctx = workflow.WithActivityOptions(ctx, ao)
+
 	var result2 string
 	err = workflow.ExecuteActivity(ctx, "Activity2", "a2").Get(ctx, &result2)
 	if err != nil {
@@ -69,15 +76,10 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 
 	logger.Info("workflow completed.", "result", result+result2)
 
-	return result, nil
+	return result + result2, nil
 }
 
 func Activity1(ctx context.Context, name string) (string, error) {
 	log.Info("activity_1 is calling")
-	return "Hello " + name + "!", nil
-}
-
-func Activity2(ctx context.Context, name string) (string, error) {
-	log.Info("activity_2 is calling")
 	return "Hello " + name + "!", nil
 }

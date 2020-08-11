@@ -47,13 +47,12 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
 
-	logger := workflow.GetLogger(ctx)
-	logger.Info("HelloWorld workflow started", "name", name)
+	log.Str("workflow runID", workflow.GetInfo(ctx).WorkflowExecution.RunID).Infof("HelloWorld workflow started. name: %s", name)
 
 	var result string
 	err := workflow.ExecuteActivity(ctx, "Activity1", "a1").Get(ctx, &result)
 	if err != nil {
-		logger.Error("Activity1 failed.", "Error", err)
+		log.Err(err).Error("Activity1 failed.")
 		return "", err
 	}
 
@@ -70,11 +69,11 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 	var result2 Message
 	err = workflow.ExecuteActivity(ctx, "Activity2", "a2").Get(ctx, &result2)
 	if err != nil {
-		logger.Error("Activity2 failed.", "Error", err)
+		log.Err(err).Error("Activity2 failed.")
 		return "", err
 	}
 
-	logger.Info("workflow completed.", "result", result+result2.Content)
+	log.Infof("workflow completed. result: %s", result+result2.Content)
 	return result + result2.Content, nil
 }
 

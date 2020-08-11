@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/jasonsoft/log/v2"
 	"github.com/jasonsoft/log/v2/handlers/console"
@@ -36,7 +37,19 @@ func main() {
 	}
 }
 
-func Activity2(ctx context.Context, name string) (string, error) {
+type Message struct {
+	ID        string
+	Content   string
+	CreatedAt time.Time
+}
+
+func Activity2(ctx context.Context, name string) (*Message, error) {
 	log.Info("activity_2 is calling")
-	return "Hello " + name + "!", nil
+	
+	result := Message{
+		ID:        "abc",
+		Content:   "content1111",
+		CreatedAt: time.Now(),
+	}
+	return &result, nil
 }

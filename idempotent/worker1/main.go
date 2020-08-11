@@ -67,19 +67,24 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
 
-	var result2 string
+	var result2 Message
 	err = workflow.ExecuteActivity(ctx, "Activity2", "a2").Get(ctx, &result2)
 	if err != nil {
 		logger.Error("Activity2 failed.", "Error", err)
 		return "", err
 	}
 
-	logger.Info("workflow completed.", "result", result+result2)
+	logger.Info("workflow completed.", "result", result+result2.Content)
+	return result + result2.Content, nil
+}
 
-	return result + result2, nil
+type Message struct {
+	ID        string
+	Content   string
+	CreatedAt time.Time
 }
 
 func Activity1(ctx context.Context, name string) (string, error) {
 	log.Info("activity_1 is calling")
-	return "Hello " + name + "!", nil
+	return "Hello " + name, nil
 }

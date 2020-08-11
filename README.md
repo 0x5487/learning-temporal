@@ -11,7 +11,8 @@ Web: http://localhost:8088/
 ### Activity
 
 1. 每個activity 都需要是 `idempotent`
-2. 
+2. 如果再執行 activity 的過程中發生　`panic` 這些錯誤都將在主要的 workflow 裡面當成一般錯誤被攔截起來, 並不會直接 panic 掉然後造成workflow 無法成功執行下去
+3. 
 
 ### Distributed CRON
 

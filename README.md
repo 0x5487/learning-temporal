@@ -1,12 +1,16 @@
 # learning-Temporal
 
-Web: http://localhost:8088/
+Dashboard Web: http://localhost:8088/
 
 ### Workflow
 
 1. Workflow 是由 `workflow worker` 來執行的
 2. 如果中間 `workflow worker` 掛掉了，整個 workflow 會重跑，但 `activity` 會從 history 找之前的結果
-3. 過程中如果有用到 zap 的 logger, 當重複執行他不會列印出來內容
+3. 過程中如果有用到 logger, 當重複執行他不會列印出來內容
+4. Go SDK, goroutine 和 sleep 等一些 func 需要改用 workflow SDK 裡面的對應func
+   https://docs.temporal.io/docs/go-create-workflows/#special-temporal-sdk-functions-and-types
+   舉例: 假設一個場景，我們想讓某個 activity 暫時休息 3 秒, 如果使用 `time.Sleep`, 這樣其實 server 是不知道要 sleep, 所以導致 activity 還是會觸發actitity 的timeout 機制, 預設 10 秒, 正確的動作應該要用 `workflow.Sleep`
+5. 如果 workflow 一直用 `for` 和 ‵sleep` 一直跑的話，這會造成 workflow history 變很大, 當達到 server 設定的 workflow history 上限後就會出問題喔 
 
 ### Activity
 

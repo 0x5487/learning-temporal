@@ -2,6 +2,12 @@
 
 Dashboard Web: http://localhost:8088/
 
+## Question
+
+1. 要如何處裡每一個 workflow 的版本差異?
+2. 如何控制 workflow 的 history 的保存時間? (RETENTION PERIOD) , 目前看起來是依據namespace 下去設定
+3. 每一個 workflow history 的最大可以保存的資料量是多少?
+
 ### Workflow
 
 1. Workflow 是由 `workflow worker` 來執行的
@@ -21,3 +27,6 @@ Dashboard Web: http://localhost:8088/
 ### Distributed CRON
 
 1. 只支援到分鐘
+2. cron 語法可以參考: https://crontab.guru/
+3. 每個執行都是獨立一個 workflow instance, instance, 獨立的 runID
+4. 透過 dashboard 把 cron workflow terminated 之後的排程都將不在執行

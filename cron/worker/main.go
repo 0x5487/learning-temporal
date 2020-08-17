@@ -55,7 +55,7 @@ func main() {
 	}
 }
 
-// CronWorkflow is a Hello World workflow definition.
+// CronWorkflow is a cron workflow definition.
 func CronWorkflow(ctx workflow.Context, name string) error {
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Minute,
@@ -69,6 +69,12 @@ func CronWorkflow(ctx workflow.Context, name string) error {
 		return err
 	}
 
+	if workflow.HasLastCompletionResult(ctx) {
+		log.Info("HasLastCompletionResult")
+	} else {
+		log.Info("no result from last task")
+	}
+
 	log.Info("CronWorkflow completed.")
 
 	return nil
@@ -76,6 +82,5 @@ func CronWorkflow(ctx workflow.Context, name string) error {
 
 func CronActivity(ctx context.Context) error {
 	log.Infof("Begin CronActivity at %s", time.Now().String())
-
 	return nil
 }

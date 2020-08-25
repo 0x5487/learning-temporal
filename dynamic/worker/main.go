@@ -2,9 +2,14 @@ package main
 
 import (
 	"context"
-	"log"
+
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
+	"github.com/jasonsoft/log/v2"
+	"github.com/jasonsoft/log/v2/handlers/console"
 	"go.temporal.io/sdk/activity"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
@@ -12,10 +17,19 @@ import (
 )
 
 func main() {
+	// set up log target
+	log.
+		Str("app_id", "worker").
+		SaveToDefault()
+
+	clog := console.New()
+	log.AddHandler(clog, log.AllLevels...)
+	defer log.Flush() // flush log buffer
+
 	// The client and worker are heavyweight objects that should be created once per process.
 	c, err := client.NewClient(client.Options{})
 	if err != nil {
-		log.Fatalln("Unable to create client", err)
+		log.Fatalf("Unable to create client", err)
 	}
 	defer c.Close()
 
@@ -24,10 +38,20 @@ func main() {
 	w.RegisterWorkflow(HelloWorldWorkflow) // it only allow to use func instead of struct or pointer
 	w.RegisterActivity(&HelloActivity{Name: "Angela"})
 
-	err = w.Run(worker.InterruptCh())
-	if err != nil {
-		log.Fatalln("Unable to start worker", err)
-	}
+	go func() {
+		err = w.Run(nil)
+		if err != nil {
+			log.Fatalf("Unable to start worker", err)
+		}
+	}()
+
+	stopChan := make(chan os.Signal, 1)
+	signal.Notify(stopChan, syscall.SIGINT, syscall.SIGKILL, syscall.SIGHUP, syscall.SIGTERM)
+	<-stopChan
+	log.Info("main: shutting down worker...")
+
+	w.Stop()
+	log.Info("main: worker was stopped")
 }
 
 // HelloWorldWorkflow is a Hello World workflow definition.

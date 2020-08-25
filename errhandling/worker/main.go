@@ -51,7 +51,7 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 			InitialInterval:    time.Second,
 			BackoffCoefficient: 2.0,
 			MaximumInterval:    time.Minute,
-			MaximumAttempts:    3, // retry 3 times
+			MaximumAttempts:    3, // run 3 times maximum
 		},
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)

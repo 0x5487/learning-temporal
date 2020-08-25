@@ -8,6 +8,7 @@ Dashboard Web: http://localhost:8088/
 2. 如何控制 workflow 的 history 的保存時間? (RETENTION PERIOD) , 目前看起來是依據namespace 下去設定
 3. 每一個 workflow history 的最大可以保存的資料量是多少?
 4. 如何沒有影響的修改 cron workflow 的 schedule?
+5. 需要研究如何傳遞 `request_id` 到每個 workflow 裡面
 
 ### Workflow
 
@@ -19,12 +20,13 @@ Dashboard Web: http://localhost:8088/
    https://docs.temporal.io/docs/go-create-workflows/#special-temporal-sdk-functions-and-types
    舉例: 假設一個場景，我們想讓某個 activity 暫時休息 3 秒, 如果使用 `time.Sleep`, 這樣其實 server 是不知道要 sleep, 所以導致 activity 還是會觸發actitity 的timeout 機制, 預設 10 秒, 正確的動作應該要用 `workflow.Sleep`
 6. 如果 workflow 一直用 `for` 和 ‵sleep` 一直跑的話，這會造成 workflow history 變很大, 當達到 server 設定的 workflow history 上限後就會出問題喔 
+7. workflow 在註冊的時候只能傳入 `func` 不能傳入 `struct` 和 `pointer`
 
 ### Activity
 
 1. 每個activity 都需要是 `idempotent`
 2. 如果再執行 activity 的過程中發生　`panic` 這些錯誤都將在主要的 workflow 裡面當成一般錯誤被攔截起來, 並不會直接 panic 掉然後造成workflow 無法成功執行下去
-3. 
+3. activity 在註冊的時候可以傳入 `func` 和 `struct`
 
 ### Distributed CRON
 

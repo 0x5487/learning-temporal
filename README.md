@@ -2,17 +2,21 @@
 
 Dashboard Web: http://localhost:8088/
 
-## Question
+### Question
 
 1. 要如何處裡每一個 workflow 的版本差異?
 3. 每一個 workflow history 的最大可以保存的資料量是多少?
 4. 如何沒有影響的修改 cron workflow 的 schedule?
 5. 需要研究如何傳遞 `request_id` 到每個 workflow 裡面
 
+### Client
+
+1. 可以先把任務發給 temporal server, `worker` 並不需要起來，之後可以等 `worker` 起來在執行
+
 ### Worker
 
-	1. 每一個 worker 預設是 `2` 個 goroutines 從 server 拉任務 (MaxConcurrentWorkflowTaskPollers)
- 	2. 每一個 worker 預設同一時間最多執行 `1000` activity   (MaxConcurrentActivityExecutionSize)
+1. 每一個 worker 預設是 `2` 個 goroutines 從 server 拉任務 (MaxConcurrentWorkflowTaskPollers)
+2. 每一個 worker 預設同一時間最多執行 `1000` activity   (MaxConcurrentActivityExecutionSize)
 
 ### Workflow
 
@@ -25,6 +29,12 @@ Dashboard Web: http://localhost:8088/
    舉例: 假設一個場景，我們想讓某個 activity 暫時休息 3 秒, 如果使用 `time.Sleep`, 這樣其實 server 是不知道要 sleep, 所以導致 activity 還是會觸發actitity 的timeout 機制, 預設 10 秒, 正確的動作應該要用 `workflow.Sleep`
 6. 如果 workflow 一直用 `for` 和 ‵sleep` 一直跑的話，這會造成 workflow history 變很大, 當達到 server 設定的 workflow history 上限後就會出問題喔 
 7. workflow 在註冊的時候只能傳入 `func` 不能傳入 `struct` 和 `pointer`
+
+### Child workflow
+
+​	1. 在建立 child worflow 的時候可以指定當 parent workflow 如果執行完畢的話, child workflow 是否也要跟著結束, 預設是跟著結束
+
+
 
 ### Activity
 

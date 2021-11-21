@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/jasonsoft/learning-temporal/ctxpropagation"
-	"github.com/jasonsoft/log/v2"
-	"github.com/jasonsoft/log/v2/handlers/console"
+	"github.com/nite-coder/blackbear/pkg/log"
+	"github.com/nite-coder/blackbear/pkg/log/handler/console"
 	"go.opentelemetry.io/otel/api/global"
 	"go.opentelemetry.io/otel/bridge/opentracing"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
@@ -48,14 +48,10 @@ func initTracer() func() {
 }
 
 func main() {
-	// set up log target
-	log.
-		Str("app_id", "worker").
-		SaveToDefault()
-
+	logger := log.New()
 	clog := console.New()
-	log.AddHandler(clog, log.AllLevels...)
-	defer log.Flush() // flush log buffer
+	logger.AddHandler(clog, log.AllLevels...)
+	log.SetLogger(logger)
 
 	// create tracer
 	fn := initTracer()
@@ -77,9 +73,7 @@ func main() {
 	defer c.Close()
 
 	w := worker.New(c, "hello-world", worker.Options{
-		WorkflowInterceptorChainFactories: []internal.WorkflowInterceptor{
-			
-		},
+		WorkflowInterceptorChainFactories: []internal.WorkflowInterceptor{},
 	})
 
 	w.RegisterWorkflow(HelloWorldWorkflow) // it only allow to use func instead of struct or pointer

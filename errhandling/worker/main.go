@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/jasonsoft/log/v2"
-	"github.com/jasonsoft/log/v2/handlers/console"
+	"github.com/nite-coder/blackbear/pkg/log"
+	"github.com/nite-coder/blackbear/pkg/log/handler/console"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/worker"
@@ -14,14 +14,11 @@ import (
 )
 
 func main() {
-	defer log.Flush()
-	// set up log target
-	log.
-		Str("app_id", "worker1").
-		SaveToDefault()
 
+	logger := log.New()
 	clog := console.New()
-	log.AddHandler(clog, log.AllLevels...)
+	logger.AddHandler(clog, log.AllLevels...)
+	log.SetLogger(logger)
 
 	// The client and worker are heavyweight objects that should be created once per process.
 	c, err := client.NewClient(client.Options{})

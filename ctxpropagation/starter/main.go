@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/jasonsoft/learning-temporal/ctxpropagation"
-	"github.com/jasonsoft/log/v2"
-	"github.com/jasonsoft/log/v2/handlers/console"
+	"github.com/nite-coder/blackbear/pkg/log"
+	"github.com/nite-coder/blackbear/pkg/log/handler/console"
 	"go.opentelemetry.io/otel/api/global"
 	"go.opentelemetry.io/otel/bridge/opentracing"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
@@ -46,8 +46,10 @@ func main() {
 		Str("app_id", "starter").
 		SaveToDefault()
 
+	logger := log.New()
 	clog := console.New()
-	log.AddHandler(clog, log.AllLevels...)
+	logger.AddHandler(clog, log.AllLevels...)
+	log.SetLogger(logger)
 
 	ctx := context.Background()
 

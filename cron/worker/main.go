@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/jasonsoft/log/v2"
-	"github.com/jasonsoft/log/v2/handlers/console"
+	"github.com/nite-coder/blackbear/pkg/log"
+	"github.com/nite-coder/blackbear/pkg/log/handler/console"
 
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
@@ -29,13 +29,10 @@ func main() {
 		}
 	}()
 
-	log.
-		Str("app_id", "worker").
-		Str("env", "dev").
-		SaveToDefault()
-
+	logger := log.New()
 	clog := console.New()
-	log.AddHandler(clog, log.AllLevels...)
+	logger.AddHandler(clog, log.AllLevels...)
+	log.SetLogger(logger)
 
 	// The client and worker are heavyweight objects that should be created once per process.
 	c, err := client.NewClient(client.Options{})

@@ -16,11 +16,11 @@ func main() {
 	defer c.Close()
 
 	workflowOptions := client.StartWorkflowOptions{
-		ID:        "error_workflowID",
-		TaskQueue: "error-handling",
+		ID:        "version_workflowID",
+		TaskQueue: "version",
 	}
 
-	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, "myWorkflow", "halo")
+	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, "VersionWorkflow", "Temporal")
 	if err != nil {
 		log.Fatalln("Unable to execute workflow", err)
 	}

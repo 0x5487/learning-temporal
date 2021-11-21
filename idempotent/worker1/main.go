@@ -52,8 +52,9 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 		return "", err
 	}
 
+	log.Infof("result: %s", result)
 	log.Info("waiting......")
-	time.Sleep(3 * time.Second)
+	workflow.Sleep(ctx, 3*time.Second)
 
 	ao = workflow.ActivityOptions{
 		TaskQueue:              "idempotent2",

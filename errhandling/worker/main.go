@@ -14,7 +14,6 @@ import (
 )
 
 func main() {
-
 	logger := log.New()
 	clog := console.New()
 	logger.AddHandler(clog, log.AllLevels...)
@@ -45,10 +44,11 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 		ScheduleToStartTimeout: time.Minute,
 		StartToCloseTimeout:    time.Minute,
 		RetryPolicy: &temporal.RetryPolicy{
-			InitialInterval:    time.Second,
-			BackoffCoefficient: 2.0,
-			MaximumInterval:    time.Minute,
-			MaximumAttempts:    3, // run 3 times maximum
+			InitialInterval:        time.Second,
+			BackoffCoefficient:     2.0,
+			MaximumInterval:        time.Second * 100, // 100 * InitialInterval
+			MaximumAttempts:        3,                 // run 3 times maximum
+			NonRetryableErrorTypes: []string{"no_retry"},
 		},
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
@@ -63,6 +63,7 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 		//return "", err
 	}
 
+	log.Info("============new retry option==============")
 	err = workflow.ExecuteActivity(ctx, "ThrowPanicActivity", name).Get(ctx, &result)
 	if err != nil {
 		logger.Error("ThrowPanicActivity failed.", "Error", err)
@@ -76,6 +77,13 @@ func myWorkflow(ctx workflow.Context, name string) (string, error) {
 
 func ThrowErrorActivity(ctx context.Context, name string) (string, error) {
 	log.Info("ThrowErrorActivity is calling")
+
+	if name == "noretry" {
+		log.Info("no retry error")
+		err := errors.New("oooops....")
+		return "", temporal.NewNonRetryableApplicationError("can't retry", "no_retry", err)
+	}
+
 	return "", errors.New("throw error happened")
 }
 

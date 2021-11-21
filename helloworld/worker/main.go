@@ -56,11 +56,6 @@ func HelloWorldWorkflow(ctx workflow.Context, name string) (string, error) {
 func HelloWorldActivity(ctx context.Context, name string) (string, error) {
 	logger := activity.GetLogger(ctx)
 
-	execution := workflow.GetInfo(ctx).WorkflowExecution
-	runID := fmt.Sprintf("runID :%v", execution.RunID)
-	logger.Info("runID: ", runID)
-
-
 	logger.Info("Activity", "name", name)
 	return "Hello " + name + "!", nil
 }

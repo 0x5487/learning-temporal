@@ -64,5 +64,11 @@ Dashboard Web: http://localhost:8088/
 1. 修改 namespace 的 retention period
 
    ```shell
-    docker run --network=host --rm temporalio/tctl:0.29.0 --namespace {your_namespace} namespace update --retention 2
+    docker run --rm -it --entrypoint tctl --network host --env TEMPORAL_CLI_ADDRESS=localhost:7233 temporalio/admin-tools:1.13.0 --namespace default namespace update --retention 7
    ```
+
+2. 建立 namesapce
+
+  ```shell
+  docker run --rm -it --entrypoint tctl --network host --env TEMPORAL_CLI_ADDRESS=localhost:7233 temporalio/admin-tools:1.13.0 --namespace default namespace register
+  ```

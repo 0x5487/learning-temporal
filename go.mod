@@ -3,6 +3,7 @@ module github.com/jasonsoft/learning-temporal
 go 1.14
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/nite-coder/blackbear v0.0.0-20211114052704-3b7ffe1f55e9
 	go.opentelemetry.io/otel v0.11.0
 	go.opentelemetry.io/otel/bridge/opentracing v0.11.0

@@ -17,6 +17,7 @@ import (
 	"go.opentelemetry.io/otel/label"
 	"go.temporal.io/sdk/activity"
 	"go.temporal.io/sdk/client"
+	"go.temporal.io/sdk/interceptor"
 	"go.temporal.io/sdk/internal"
 	"go.temporal.io/sdk/worker"
 	"go.temporal.io/sdk/workflow"
@@ -65,7 +66,7 @@ func main() {
 		ContextPropagators: []workflow.ContextPropagator{
 			ctxpropagation.NewContextPropagator(),
 		},
-		Tracer: bridgeTracer,
+		Interceptors: []interceptor.ClientInterceptor{bridgeTracer},
 	})
 	if err != nil {
 		log.Fatalf("Unable to create client", err)

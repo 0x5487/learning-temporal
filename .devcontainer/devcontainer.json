@@ -14,50 +14,33 @@
   "settings": {
     "files.eol": "\n",
     "remote.extensionKind": {
-      "ms-azuretools.vscode-docker": "workspace"
+        "ms-azuretools.vscode-docker": "workspace"
     },
-    "editor.codeActionsOnSaveTimeout": 3000,
     "go.useLanguageServer": true,
     "[go]": {
-      "editor.formatOnSave": true,
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": true,
-      },
-      // Optional: Disable snippets, as they conflict with completion ranking.
-      "editor.snippetSuggestions": "none"
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
     },
     "[go.mod]": {
-      "editor.formatOnSave": true,
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": true,
-      },
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
     },
     "gopls": {
-      "usePlaceholders": false,
-      "staticcheck": true,
-      "experimentalWorkspaceModule": true
+        "build.buildFlags": [
+            "-tags",
+            ""
+        ],
+        "usePlaceholders": false,
+        "staticcheck": true,
     },
-    "go.autocompleteUnimportedPackages": true,
-    "go.gotoSymbol.includeImports": true,
-    "go.gotoSymbol.includeGoroot": true,
     "go.lintTool": "golangci-lint",
-    "go.buildOnSave": "workspace",
-    "go.lintOnSave": "workspace",
-    "go.vetOnSave": "workspace",
+    "go.lintOnSave": "package",
     "editor.formatOnSave": true,
-    "go.toolsEnvVars": {
-      "GOFLAGS": "-tags=",
-      "CGO_ENABLED": 1 // for the race detector
-    },
-    "gopls.env": {
-      "GOFLAGS": "-tags="
-    },
-    "go.testEnvVars": {
-      "": "",
-    },
     "go.testFlags": [
-      "-v",
-      "-race"
+        "-v",
+        "-race"
     ],
     "go.testTimeout": "10s",
     "go.coverOnSingleTest": true,
@@ -91,5 +74,5 @@
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "go mod download && go mod tidy",
   // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-  // "remoteUser": "vscode"
+  //"remoteUser": "vscode"
 }

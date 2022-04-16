@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VARIANT: "1.17"
+        VARIANT: "1.18"
         NODE_VERSION: "lts/*"
 
     init: true
@@ -22,14 +22,12 @@ services:
     network_mode: host
 
     environment:
-    - DEBUG=1
-
-    # Uncomment the next four lines if you will use a ptrace-based debuggers like C++, Go, and Rust.
+      - DEBUG=1
+      # Uncomment the next four lines if you will use a ptrace-based debuggers like C++, Go, and Rust.
     cap_add:
       - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
-
     # Uncomment the next line to use a non-root user for all processes.
     # user: vscode
 

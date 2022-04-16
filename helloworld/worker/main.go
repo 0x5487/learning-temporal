@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -42,10 +43,18 @@ func HelloWorldWorkflow(ctx workflow.Context, name string) (string, error) {
 	logger.Info("HelloWorld workflow started", "name", name)
 
 	var result string
+	var count int
+
+start:
 	err := workflow.ExecuteActivity(ctx, "HelloWorldActivity", name).Get(ctx, &result)
 	if err != nil {
 		logger.Error("Activity failed.", "Error", err)
 		return "", err
+	}
+
+	count++
+	if count < 3 {
+		goto start
 	}
 
 	logger.Info("HelloWorld workflow completed.", "result", result)
@@ -55,7 +64,7 @@ func HelloWorldWorkflow(ctx workflow.Context, name string) (string, error) {
 
 func HelloWorldActivity(ctx context.Context, name string) (string, error) {
 	logger := activity.GetLogger(ctx)
-
+	fmt.Println("====================================================")
 	logger.Info("Activity", "name", name)
 	return "Hello " + name + "!", nil
 }

@@ -22,8 +22,10 @@ func main() {
 
 	w := worker.New(c, "hello-world", worker.Options{})
 
-	w.RegisterWorkflow(HelloWorldWorkflow)
-	w.RegisterActivity(HelloWorldActivity)
+	h := &HelloWorldWorkflowHandler{}
+
+	w.RegisterWorkflow(h.HelloWorldWorkflow)
+	w.RegisterActivity(h.HelloWorldActivity)
 
 	err = w.Run(worker.InterruptCh())
 	if err != nil {
@@ -32,7 +34,7 @@ func main() {
 }
 
 // HelloWorldWorkflow is a Hello World workflow definition.
-func HelloWorldWorkflow(ctx workflow.Context, name string) (string, error) {
+func (h *HelloWorldWorkflowHandler) HelloWorldWorkflow(ctx workflow.Context, name string) (string, error) {
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Minute,
 		StartToCloseTimeout:    time.Minute,
@@ -62,7 +64,10 @@ start:
 	return result, nil
 }
 
-func HelloWorldActivity(ctx context.Context, name string) (string, error) {
+type HelloWorldWorkflowHandler struct {
+}
+
+func (h *HelloWorldWorkflowHandler) HelloWorldActivity(ctx context.Context, name string) (string, error) {
 	logger := activity.GetLogger(ctx)
 	fmt.Println("====================================================")
 	logger.Info("Activity", "name", name)

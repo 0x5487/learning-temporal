@@ -14,7 +14,9 @@ import (
 
 func main() {
 	// The client and worker are heavyweight objects that should be created once per process.
-	c, err := client.NewClient(client.Options{})
+	c, err := client.NewClient(client.Options{
+		HostPort: "host.docker.internal:7233",
+	})
 	if err != nil {
 		log.Fatalln("Unable to create client", err)
 	}
